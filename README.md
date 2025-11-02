@@ -1,5 +1,7 @@
 ## Backend Workers [cocode-ai](https://cocode.androidbutut.workers.dev)
 
+https://cocode.androidbutut.workers.dev
+
 🎯 Fitur Utama:
 * /chat - Chat biasa dengan AI, bisa atur temperature & max_tokens.
 * /code - Generate kode dalam berbagai bahasa programming.
