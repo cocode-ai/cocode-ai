@@ -1,58 +1,51 @@
-# Jekyll Blog with Tailwind CSS
+## Backend [workers-ai](https://cocode.androidbutut.workers.dev)
 
-This is a basic Jekyll blog template styled with Tailwind CSS.
+🎯 Fitur Utama:
+* /chat - Chat biasa dengan AI, bisa atur temperature & max_tokens.
+* /code - Generate kode dalam berbagai bahasa programming.
+* /analyze - Analisis teks (sentiment, code review, SEO, dll).
+* /summarize - Ringkas teks panjang (short/medium/long).
+* /stream - Streaming response real-time.
+  
+📝 Cara Pakai:
 
-## Features
+// Chat biasa
 
-*   Clean and modern design
-*   Responsive layout
-*   Easy to customize with Tailwind CSS
-*   Jekyll's static site generation
+```
+fetch('https://your-worker.workers.dev/chat', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    messages: [
+      { role: 'system', content: 'Kamu adalah asisten pintar' },
+      { role: 'user', content: 'Jelasin apa itu async/await' }
+    ],
+    temperature: 0.7
+  })
+})
 
-## Getting Started
+// Generate code
+fetch('https://your-worker.workers.dev/code', {
+  method: 'POST',
+  body: JSON.stringify({
+    prompt: 'Buatin function untuk sorting array dengan bubble sort',
+    language: 'javascript'
+  })
+})
+```
 
-1.  **Installation:**
+⚙️ Setup di Cloudflare:
 
-    Make sure you have Jekyll installed:
+Buat Workers baru di dashboard Cloudflare
+Copy paste kode di atas
+Tambahkan AI binding di wrangler.toml:
 
-    ```bash
-    gem install bundler jekyll
-    ```
+```
+name = "ai-backend"
+main = "src/index.js"
 
-    Then, install dependencies:
+[ai]
+binding = "AI"
+```
 
-    ```bash
-    bundle install
-    ```
-
-2.  **Running the Blog:**
-
-    Start the Jekyll server:
-
-    ```bash
-    bundle exec jekyll serve
-    ```
-
-    This will build the site and make it available at `http://localhost:4000`.
-
-## Structure
-
-*   `_layouts`: Contains the layout templates.
-*   `_includes`: Contains reusable components.
-*   `_posts`: Contains the blog posts (in Markdown format).
-*   `assets`: Contains CSS, images, and other assets.
-*   `tailwind.config.js`: Tailwind CSS configuration file.
-*   `postcss.config.js`: PostCSS configuration file.
-
-## Customization
-
-*   **Tailwind CSS:** Modify the `tailwind.config.js` file to customize the Tailwind CSS theme.
-*   **Layouts:** Edit the files in the `_layouts` directory to change the overall site layout.
-*   **Includes:** Modify the files in the `_includes` directory to change the reusable components.
-*   **Posts:** Add new blog posts in the `_posts` directory.
-
-## Contributing
-
-Feel free to contribute by submitting issues and pull requests.
-
-## Build from [Jekyll Buildr](https://github.com/daffadevhosting/jekyll-buildr)
+Udah support CORS juga, jadi bisa dipanggil dari frontend manapun! 🔥
