@@ -1,4 +1,4 @@
-## Backend [workers-ai](https://cocode.androidbutut.workers.dev)
+## Backend Workers [cocode-ai](https://cocode.androidbutut.workers.dev)
 
 🎯 Fitur Utama:
 * /chat - Chat biasa dengan AI, bisa atur temperature & max_tokens.
