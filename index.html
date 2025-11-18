@@ -3,12 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CoCode-AI - AI UI/UX Builder</title>
-    
-    <!-- Ionic Core CDN -->
+    <title>cocode AI — AI Coding & Redesign Partner | Bantu bikin kode, desain ulang & konsultasi</title>
+    <meta name="description" content="cocode AI — Partner AI untuk coding dan redesign website. Chat dengan AI untuk bantu koding, optimasi UI/UX, dan dapatkan template desain modern. Gratis & Premium.">
+    <meta name="keywords" content="AI coding, redesign website, AI developer, UI UX redesign, code assistant, cocode AI">
+    <meta name="author" content="cocode AI">
+    <link rel="canonical" href="https://cocode-ai.github.io/">
+
+    <!-- Social / Open Graph -->
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="cocode AI — AI Coding & Redesign Partner">
+    <meta property="og:description" content="Partner AI untuk coding dan redesign website — solusi cepat untuk pengembangan, optimasi, dan desain ulang.">
+    <meta property="og:url" content="https://cocode-ai.github.io/">
+    <meta property="og:site_name" content="cocode AI">
+    <meta property="og:image" content="https://cocode-ai.github.io/assets/img/og-image.jpeg">
+    <meta property="og:image:alt" content="cocode AI - AI Coding & Redesign Partner">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@cocode_ai">
+    <meta name="twitter:title" content="cocode AI — AI Coding & Redesign Partner">
+    <meta name="twitter:description" content="Partner AI untuk coding & redesign website. Chat, generate code, dan preview desain.">
+    <meta name="twitter:image" content="https://cocode-ai.github.io/assets/img/og-image.jpeg">
+
+    <!-- Prefetch / Preconnect untuk performa -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
+    <!-- favicon & touch icon -->
+    <link rel="icon" href="/assets/fav/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Ionic & Libraries -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <style>
         :root {
@@ -28,741 +62,749 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background: var(--light-color);
-            min-height: 100vh;
         }
 
-        .app-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+        .hidden {
+            display: none !important;
         }
 
-        .header {
+        .message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .user-message {
             background: var(--primary-color);
             color: white;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-left: 2rem;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .header p {
-            margin: 0.25rem 0 0 0;
-            opacity: 0.9;
-            font-size: 0.9rem;
-        }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
-            gap: 1rem;
-        }
-
-        .tab-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-        }
-
-        .output-container {
-            flex: 1;
+        .ai-message {
             background: white;
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            overflow-y: auto;
-            min-height: 300px;
-            max-height: 60vh;
+            border: 1px solid #e0e0e0;
+            margin-right: 2rem;
         }
 
-        .input-section {
-            background: white;
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: sticky;
-            bottom: 0;
-            margin-top: auto;
+        .code-message {
+            background: var(--dark-color);
+            color: white;
+            margin-right: 2rem;
         }
 
-        .model-selector {
-            margin-bottom: 1rem;
-        }
-
-        .model-options {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .model-option {
-            flex: 1;
-            min-width: 140px;
-        }
-
-        .input-area {
-            display: flex;
-            gap: 0.5rem;
-            align-items: flex-end;
-        }
-
-        .input-field {
-            flex: 1;
-        }
-
-        .send-button {
-            min-width: 60px;
-            height: 56px;
-        }
-
-        .feature-tags {
-            margin: 0.5rem 0;
-        }
-
-        .feature-tag {
-            margin: 0.25rem;
-            --background: var(--light-color);
-            --color: var(--dark-color);
-        }
-
-        .feature-tag.selected {
-            --background: var(--primary-color);
-            --color: white;
-        }
-
-        .response-content {
+        .message-content {
+            white-space: pre-wrap;
             line-height: 1.6;
         }
 
+        .message-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .token-info {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 0.5rem;
+        }
+
+        .preview-button {
+            margin-top: 0.5rem;
+        }
+
         .code-block {
-            background: var(--dark-color);
-            color: white;
+            background: #1e1e1e;
+            color: #d4d4d4;
             padding: 1rem;
             border-radius: 8px;
             margin: 0.5rem 0;
             overflow-x: auto;
             font-family: 'Courier New', monospace;
             font-size: 0.9rem;
+            position: relative;
         }
 
-        .preview-frame {
-            width: 100%;
-            height: 400px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: white;
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            --padding-start: 8px;
+            --padding-end: 8px;
+            --padding-top: 4px;
+            --padding-bottom: 4px;
         }
 
-        .loading-spinner {
+        #loading-indicator {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 2rem;
+            padding: 1rem;
         }
 
-        .empty-state {
-            text-align: center;
-            color: #666;
-            padding: 3rem 1rem;
+        #preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
         }
 
-        .empty-state ion-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+        .model-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: var(--secondary-color);
+            color: white;
+            margin-left: 0.5rem;
         }
 
-        .improvement-item {
-            margin: 0.5rem 0;
-            padding: 0.5rem;
-            background: var(--light-color);
-            border-radius: 8px;
+        .settings-section {
+            margin-bottom: 1.5rem;
         }
 
-        .token-info {
-            font-size: 0.8rem;
-            color: #666;
-            text-align: right;
-            margin-top: 0.5rem;
+        .settings-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
         }
 
-        /* Responsive Design */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .main-content {
-                padding: 0.5rem;
+            .user-message {
+                margin-left: 0.5rem;
             }
-
-            .header h1 {
-                font-size: 1.25rem;
+            .ai-message {
+                margin-right: 0.5rem;
             }
-
-            .input-area {
-                flex-direction: column;
-            }
-
-            .send-button {
-                width: 100%;
-                height: 48px;
-            }
-
-            .model-options {
-                flex-direction: column;
-            }
-
-            .model-option {
-                min-width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header {
-                padding: 0.75rem;
-            }
-
-            .header h1 {
-                font-size: 1.1rem;
-            }
-
-            .output-container {
-                padding: 0.75rem;
-                margin-bottom: 0.75rem;
-            }
-
-            .input-section {
-                padding: 0.75rem;
-            }
-        }
-
-        /* Custom scrollbar */
-        .output-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .output-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 3px;
-        }
-
-        .output-container::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 3px;
-        }
-
-        .output-container::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <div class="header">
-            <h1>🚀 CoCode-AI</h1>
-            <p>AI untuk Membuat UI/UX HTML + Vanilla</p>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Tabs -->
-            <ion-tabs class="tab-content">
-                <ion-tab-bar slot="bottom">
-                    <ion-tab-button tab="chat" selected>
-                        <ion-icon name="chatbubble-outline"></ion-icon>
-                        <ion-label>General Chat</ion-label>
-                    </ion-tab-button>
-                    
-                    <ion-tab-button tab="build-ui">
-                        <ion-icon name="construct-outline"></ion-icon>
-                        <ion-label>Build UI</ion-label>
-                    </ion-tab-button>
-                    
-                    <ion-tab-button tab="redesign">
-                        <ion-icon name="color-palette-outline"></ion-icon>
+    <ion-app>
+        <ion-header>
+            <ion-toolbar color="primary">
+                <ion-title>cocode AI</ion-title>
+                <ion-buttons slot="end">
+                    <ion-button id="settings-button">
+                        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+            </ion-toolbar>
+            <ion-toolbar color="primary">
+                <ion-segment value="chat" id="mode-segment">
+                    <ion-segment-button value="chat">
+                        <ion-label>AI Chat</ion-label>
+                        <ion-icon name="chatbubbles-outline"></ion-icon>
+                    </ion-segment-button>
+                    <ion-segment-button value="code">
+                        <ion-label>Coder</ion-label>
+                        <ion-icon name="code-slash-outline"></ion-icon>
+                    </ion-segment-button>
+                    <ion-segment-button value="redesign">
                         <ion-label>Redesign</ion-label>
-                    </ion-tab-button>
-                </ion-tab-bar>
-            </ion-tabs>
-
-            <!-- Tab Contents -->
-            <div class="tab-content">
-                <!-- Chat Tab -->
-                <div id="chat-tab" class="tab-pane active">
-                    <div class="output-container" id="chat-output">
-                        <div class="empty-state">
-                            <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
-                            <p>Mulai percakapan tentang programming dan UI/UX</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Build UI Tab -->
-                <div id="build-ui-tab" class="tab-pane" style="display: none;">
-                    <div class="output-container" id="build-ui-output">
-                        <div class="empty-state">
-                            <ion-icon name="code-slash-outline"></ion-icon>
-                            <p>Deskripsikan UI yang ingin Anda buat</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Redesign Tab -->
-                <div id="redesign-tab" class="tab-pane" style="display: none;">
-                    <div class="output-container" id="redesign-output">
-                        <div class="empty-state">
-                            <ion-icon name="brush-outline"></ion-icon>
-                            <p>Masukkan URL website yang ingin di-redesign</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Input Section - Tetap di bawah -->
-            <div class="input-section">
-                <!-- Model Selector -->
-                <div class="model-selector">
-                    <ion-label>Pilih Model AI:</ion-label>
-                    <div class="model-options">
-                        <ion-segment class="model-option" value="openai/gpt-oss-120b" id="model-selector">
-                            <ion-segment-button value="openai/gpt-oss-120b">
-                                <ion-label>GPT-OSS</ion-label>
-                            </ion-segment-button>
-                            <ion-segment-button value="moonshotai/kimi-k2-instruct-0905">
-                                <ion-label>Kimi-K2</ion-label>
-                            </ion-segment-button>
-                        </ion-segment>
-                    </div>
-                </div>
-
-                <!-- Dynamic Input Fields -->
-                <div id="chat-input" class="input-area">
-                    <ion-textarea 
-                        class="input-field"
-                        id="chat-message"
-                        placeholder="Tanyakan tentang programming, HTML, CSS, JavaScript..."
-                        rows="3"
-                        auto-grow="true"
-                    ></ion-textarea>
-                    <ion-button class="send-button" id="chat-send" expand="block">
-                        <ion-icon name="send-outline"></ion-icon>
-                    </ion-button>
-                </div>
-
-                <div id="build-ui-input" class="input-area" style="display: none;">
-                    <ion-textarea 
-                        class="input-field"
-                        id="build-ui-description"
-                        placeholder="Deskripsikan UI yang ingin dibuat, contoh: 'Dashboard admin dengan sidebar, header, dan cards statistics'"
-                        rows="3"
-                        auto-grow="true"
-                    ></ion-textarea>
-                    <ion-button class="send-button" id="build-ui-send" expand="block">
-                        <ion-icon name="construct-outline"></ion-icon>
-                    </ion-button>
-                </div>
-
-                <div id="redesign-input" class="input-area" style="display: none;">
-                    <ion-input
-                        class="input-field"
-                        id="redesign-url"
-                        placeholder="https://example.com"
-                        type="url"
-                    ></ion-input>
-                    <ion-button class="send-button" id="redesign-send" expand="block">
                         <ion-icon name="color-palette-outline"></ion-icon>
-                    </ion-button>
-                </div>
+                    </ion-segment-button>
+                </ion-segment>
+            </ion-toolbar>
+        </ion-header>
 
-                <!-- Feature Tags untuk Build UI -->
-                <div id="build-ui-features" class="feature-tags" style="display: none;">
-                    <ion-chip class="feature-tag" data-feature="responsive">
-                        <ion-label>Responsive</ion-label>
-                    </ion-chip>
-                    <ion-chip class="feature-tag" data-feature="dark-mode">
-                        <ion-label>Dark Mode</ion-label>
-                    </ion-chip>
-                    <ion-chip class="feature-tag" data-feature="animations">
-                        <ion-label>Animations</ion-label>
-                    </ion-chip>
-                    <ion-chip class="feature-tag" data-feature="mobile-first">
-                        <ion-label>Mobile First</ion-label>
-                    </ion-chip>
-                </div>
+        <ion-content class="ion-padding" id="chat-content">
+            <div id="message-list">
+                <!-- Messages will be inserted here -->
             </div>
-        </div>
-    </div>
+            <div id="loading-indicator" class="hidden">
+                <ion-spinner name="dots"></ion-spinner>
+                <span style="margin-left: 0.5rem;">AI sedang berpikir...</span>
+            </div>
+        </ion-content>
+
+        <ion-footer>
+            <!-- Chat & Code Footer -->
+            <div id="chat-code-footer">
+                 <ion-toolbar>
+                    <ion-textarea 
+                        class="textarea" 
+                        id="chat-input" 
+                        placeholder="Ketik pesan atau deskripsi kode..." 
+                        auto-grow="true"
+                        rows="3"
+                    ></ion-textarea>
+                    <ion-buttons slot="end">
+                        <ion-button id="send-button">
+                            <ion-icon slot="icon-only" name="send"></ion-icon>
+                        </ion-button>
+                    </ion-buttons>
+                </ion-toolbar>
+            </div>
+
+            <!-- Redesign Footer -->
+            <div id="redesign-footer" class="hidden">
+                <ion-toolbar class="inputarea">
+                    <ion-input id="url-input" placeholder="Masukkan URL website..."></ion-input>
+                </ion-toolbar>
+                <ion-toolbar>
+                    <ion-item style="width: fit-content;">
+                         <ion-select id="style-select" label="Pilih Gaya Desain" value="modern">
+                            <ion-select-option value="modern">Modern</ion-select-option>
+                            <ion-select-option value="minimalist">Minimalist</ion-select-option>
+                            <ion-select-option value="glassmorphism">Glassmorphism</ion-select-option>
+                            <ion-select-option value="cyberpunk">Cyberpunk</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-buttons slot="end">
+                        <ion-button id="redesign-button" fill="solid" color="primary">
+                            Redesign
+                            <ion-icon slot="end" name="sparkles"></ion-icon>
+                        </ion-button>
+                    </ion-buttons>
+                </ion-toolbar>
+            </div>
+        </ion-footer>
+        
+        <!-- Preview Modal -->
+        <ion-modal id="preview-modal">
+            <ion-header>
+                <ion-toolbar color="light">
+                    <ion-title>Preview & Kode Desain</ion-title>
+                    <ion-buttons slot="end">
+                        <ion-button id="close-modal-button" color="dark">
+                            <ion-icon name="close-outline"></ion-icon>
+                        </ion-button>
+                    </ion-buttons>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                <ion-grid class="ion-no-padding">
+                    <ion-row>
+                        <ion-col size="12" size-md="7" class="ion-no-padding">
+                            <div style="height: 60vh; border-bottom: 1px solid var(--ion-color-medium); border-right: 1px solid var(--ion-color-medium);">
+                                <iframe id="preview-frame" style="width: 100%; height: 100%; border: none;"></iframe>
+                            </div>
+                        </ion-col>
+                        
+                        <ion-col size="12" size-md="5" class="ion-padding">
+                            <ion-card>
+                                <ion-card-header>
+                                    <ion-card-title>Catatan Desain (Reasoning)</ion-card-title>
+                                </ion-card-header>
+                                <ion-card-content id="reasoning-output">
+                                    <!-- Reasoning content will be inserted here -->
+                                </ion-card-content>
+                            </ion-card>
+
+                            <h3 class="ion-padding-start">Kode Sumber</h3>
+                            <div class="ion-padding">
+                                <ion-button id="copy-code-button" expand="full" color="secondary" size="small">
+                                    <ion-icon name="copy-outline" slot="start"></ion-icon>
+                                    Salin Kode
+                                </ion-button>
+                                <pre style="max-height: 25vh; overflow-y: auto;"><code id="source-code-output" class="html"></code></pre>
+                            </div>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-content>
+        </ion-modal>
+
+        <!-- Settings Modal -->
+        <ion-modal id="settings-modal">
+            <ion-header>
+                <ion-toolbar color="secondary">
+                    <ion-title>Pengaturan</ion-title>
+                    <ion-buttons slot="end">
+                        <ion-button id="close-settings-modal-button" color="light">
+                            <ion-icon name="close-outline"></ion-icon>
+                        </ion-button>
+                    </ion-buttons>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content class="ion-padding">
+                <ion-list>
+                    <!-- Model Settings Section -->
+                    <div class="settings-section">
+                        <div class="settings-title">Pengaturan Model AI</div>
+                        
+                        <!-- Chat Model (Fixed) -->
+                        <ion-item>
+                            <ion-label>
+                                <h3>AI Chat Model</h3>
+                                <p>Model untuk percakapan umum</p>
+                            </ion-label>
+                            <ion-badge color="primary" slot="end">GPT-OSS-120B</ion-badge>
+                        </ion-item>
+
+                        <!-- Coder Model -->
+                        <ion-item>
+                            <ion-label>
+                                <h3>Coder Model</h3>
+                                <p>Model untuk generate kode</p>
+                            </ion-label>
+                            <ion-select id="coder-model-select" value="openai/gpt-oss-120b" interface="popover">
+                                <ion-select-option value="openai/gpt-oss-120b">GPT-OSS-120B</ion-select-option>
+                                <ion-select-option value="moonshotai/kimi-k2-instruct-0905">Kimi-K2</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+
+                        <!-- Redesign Model -->
+                        <ion-item>
+                            <ion-label>
+                                <h3>Redesign Model</h3>
+                                <p>Model untuk redesign UI/UX</p>
+                            </ion-label>
+                            <ion-select id="redesign-model-select" value="moonshotai/kimi-k2-instruct-0905" interface="popover">
+                                <ion-select-option value="openai/gpt-oss-120b">GPT-OSS-120B</ion-select-option>
+                                <ion-select-option value="moonshotai/kimi-k2-instruct-0905">Kimi-K2</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </div>
+
+                    <!-- Data Management Section -->
+                    <ion-list-header>
+                        <ion-label>Manajemen Data</ion-label>
+                    </ion-list-header>
+                    <ion-item button="true" id="clear-history-button" lines="full">
+                        <ion-label color="danger">Hapus Riwayat Chat</ion-label>
+                        <ion-icon name="trash-outline" color="danger" slot="end"></ion-icon>
+                    </ion-item>
+
+                    <!-- Account Section -->
+                    <ion-list-header>
+                        <ion-label>Akun</ion-label>
+                    </ion-list-header>
+                    <ion-item lines="none">
+                        <ion-card style="width: 100%;">
+                            <ion-card-header>
+                                <ion-card-title>Mode Premium</ion-card-title>
+                                <ion-card-subtitle id="premium-status-message">Status: Akun Gratis</ion-card-subtitle>
+                            </ion-card-header>
+                            <ion-card-content>
+                                <p id="generation-count-display" class="ion-padding-bottom">Sisa penggunaan (Code/Redesign): 2 kali.</p>
+                                <p>Dapatkan akses ke model AI yang lebih canggih, prioritas antrian, dan fitur beta lainnya.</p>
+                                <ion-button id="subscribe-button" expand="full" color="success" class="ion-margin-top">
+                                    <ion-icon name="logo-paypal" slot="start"></ion-icon>
+                                    Berlangganan via PayPal
+                                </ion-button>
+                            </ion-card-content>
+                        </ion-card>
+                    </ion-item>
+                </ion-list>
+            </ion-content>
+        </ion-modal>
+    </ion-app>
 
     <script>
         class CoCodeAI {
             constructor() {
-                this.currentTab = 'chat';
-                this.selectedModel = 'openai/gpt-oss-120b';
-                this.selectedFeatures = [];
-                this.baseURL = 'https://cocode-ai.mvstream.workers.dev'; // Ganti dengan URL worker Anda
+                this.currentMode = 'chat';
+                this.chatModel = 'openai/gpt-oss-120b'; // Fixed for chat
+                this.coderModel = 'openai/gpt-oss-120b';
+                this.redesignModel = 'moonshotai/kimi-k2-instruct-0905';
+                this.conversationHistory = [];
+                this.baseURL = 'https://your-worker.cocode-ai.workers.dev'; // Ganti dengan URL worker Anda
                 
+                this.initializeApp();
+            }
+
+            initializeApp() {
+                this.loadSettings();
                 this.initializeEventListeners();
-                this.showTab('chat');
+                this.showMode('chat');
+                
+                // Load initial message
+                this.addMessage('ai', 'Halo! Saya CoCode AI. Saya bisa membantu Anda dengan:\n\n💬 **AI Chat**: Diskusi tentang programming & UI/UX\n⚡ **Coder**: Generate kode HTML/CSS/JS dari deskripsi\n🎨 **Redesign**: Redesign website dari URL\n\nPilih mode di atas untuk mulai!', 'chat');
+            }
+
+            loadSettings() {
+                const savedCoderModel = localStorage.getItem('cocode_coder_model');
+                const savedRedesignModel = localStorage.getItem('cocode_redesign_model');
+                
+                if (savedCoderModel) this.coderModel = savedCoderModel;
+                if (savedRedesignModel) this.redesignModel = savedRedesignModel;
+
+                // Update UI
+                if (document.getElementById('coder-model-select')) {
+                    document.getElementById('coder-model-select').value = this.coderModel;
+                }
+                if (document.getElementById('redesign-model-select')) {
+                    document.getElementById('redesign-model-select').value = this.redesignModel;
+                }
+            }
+
+            saveSettings() {
+                localStorage.setItem('cocode_coder_model', this.coderModel);
+                localStorage.setItem('cocode_redesign_model', this.redesignModel);
             }
 
             initializeEventListeners() {
-                // Tab switching
-                document.querySelectorAll('ion-tab-button').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const tab = e.currentTarget.getAttribute('tab');
-                        this.showTab(tab);
-                    });
-                });
-
-                // Model selection
-                document.getElementById('model-selector').addEventListener('ionChange', (e) => {
-                    this.selectedModel = e.detail.value;
+                // Mode switching
+                document.getElementById('mode-segment').addEventListener('ionChange', (e) => {
+                    this.showMode(e.detail.value);
                 });
 
                 // Send buttons
-                document.getElementById('chat-send').addEventListener('click', () => this.sendChat());
-                document.getElementById('build-ui-send').addEventListener('click', () => this.sendBuildUI());
-                document.getElementById('redesign-send').addEventListener('click', () => this.sendRedesign());
+                document.getElementById('send-button').addEventListener('click', () => this.handleSend());
+                document.getElementById('redesign-button').addEventListener('click', () => this.handleRedesign());
 
-                // Enter key untuk textarea
-                document.getElementById('chat-message').addEventListener('keypress', (e) => {
+                // Enter key for textareas
+                document.getElementById('chat-input').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
-                        this.sendChat();
+                        this.handleSend();
                     }
                 });
 
-                document.getElementById('build-ui-description').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        this.sendBuildUI();
-                    }
-                });
-
-                document.getElementById('redesign-url').addEventListener('keypress', (e) => {
+                document.getElementById('url-input').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         e.preventDefault();
-                        this.sendRedesign();
+                        this.handleRedesign();
                     }
                 });
 
-                // Feature tags
-                document.querySelectorAll('.feature-tag').forEach(chip => {
-                    chip.addEventListener('click', (e) => {
-                        const feature = e.currentTarget.getAttribute('data-feature');
-                        this.toggleFeature(feature, e.currentTarget);
-                    });
+                // Modal controls
+                document.getElementById('settings-button').addEventListener('click', () => this.openSettings());
+                document.getElementById('close-settings-modal-button').addEventListener('click', () => this.closeSettings());
+                document.getElementById('close-modal-button').addEventListener('click', () => this.closePreview());
+                document.getElementById('copy-code-button').addEventListener('click', () => this.copySourceCode());
+
+                // Settings controls
+                document.getElementById('coder-model-select').addEventListener('ionChange', (e) => {
+                    this.coderModel = e.detail.value;
+                    this.saveSettings();
                 });
+
+                document.getElementById('redesign-model-select').addEventListener('ionChange', (e) => {
+                    this.redesignModel = e.detail.value;
+                    this.saveSettings();
+                });
+
+                document.getElementById('clear-history-button').addEventListener('click', () => this.clearHistory());
             }
 
-            showTab(tabName) {
-                this.currentTab = tabName;
+            showMode(mode) {
+                this.currentMode = mode;
                 
-                // Hide all tab contents
-                document.querySelectorAll('.tab-pane').forEach(pane => {
-                    pane.style.display = 'none';
-                });
+                // Hide all footers
+                document.getElementById('chat-code-footer').classList.add('hidden');
+                document.getElementById('redesign-footer').classList.add('hidden');
                 
-                // Hide all input areas
-                document.querySelectorAll('.input-area').forEach(input => {
-                    input.style.display = 'none';
-                });
-
-                // Show selected tab content
-                document.getElementById(`${tabName}-tab`).style.display = 'block';
-                document.getElementById(`${tabName}-input`).style.display = 'flex';
-
-                // Show/hide feature tags
-                const featuresElement = document.getElementById('build-ui-features');
-                if (tabName === 'build-ui') {
-                    featuresElement.style.display = 'block';
+                // Show appropriate footer
+                if (mode === 'redesign') {
+                    document.getElementById('redesign-footer').classList.remove('hidden');
                 } else {
-                    featuresElement.style.display = 'none';
+                    document.getElementById('chat-code-footer').classList.remove('hidden');
                 }
 
-                // Update active tab button
-                document.querySelectorAll('ion-tab-button').forEach(button => {
-                    button.removeAttribute('selected');
-                });
-                document.querySelector(`ion-tab-button[tab="${tabName}"]`).setAttribute('selected', 'true');
+                // Update UI state
+                document.getElementById('mode-segment').value = mode;
             }
 
-            toggleFeature(feature, element) {
-                if (this.selectedFeatures.includes(feature)) {
-                    this.selectedFeatures = this.selectedFeatures.filter(f => f !== feature);
-                    element.classList.remove('selected');
-                } else {
-                    this.selectedFeatures.push(feature);
-                    element.classList.add('selected');
-                }
-            }
-
-            async sendChat() {
-                const message = document.getElementById('chat-message').value.trim();
+            async handleSend() {
+                const input = document.getElementById('chat-input');
+                const message = input.value.trim();
+                
                 if (!message) return;
 
-                const outputElement = document.getElementById('chat-output');
-                this.addMessage(outputElement, 'user', message);
-                document.getElementById('chat-message').value = '';
+                input.value = '';
+                this.addMessage('user', message, this.currentMode);
 
-                await this.makeRequest('/api/ai/chat', { message, model: this.selectedModel }, outputElement);
+                if (this.currentMode === 'chat') {
+                    await this.sendChat(message);
+                } else if (this.currentMode === 'code') {
+                    await this.sendBuildUI(message);
+                }
             }
 
-            async sendBuildUI() {
-                const description = document.getElementById('build-ui-description').value.trim();
-                if (!description) return;
+            async handleRedesign() {
+                const urlInput = document.getElementById('url-input');
+                const url = urlInput.value.trim();
+                const style = document.getElementById('style-select').value;
+                
+                if (!url) {
+                    this.showError('Masukkan URL website terlebih dahulu');
+                    return;
+                }
 
-                const outputElement = document.getElementById('build-ui-output');
-                this.addMessage(outputElement, 'user', `Buat UI: ${description}`);
-                document.getElementById('build-ui-description').value = '';
-
-                await this.makeRequest('/api/ai/build-ui', { 
-                    description, 
-                    model: this.selectedModel,
-                    features: this.selectedFeatures 
-                }, outputElement);
+                urlInput.value = '';
+                this.addMessage('user', `Redesign: ${url} (Style: ${style})`, 'redesign');
+                await this.sendRedesign(url, style);
             }
 
-            async sendRedesign() {
-                const url = document.getElementById('redesign-url').value.trim();
-                if (!url) return;
-
-                const outputElement = document.getElementById('redesign-output');
-                this.addMessage(outputElement, 'user', `Redesign: ${url}`);
-                document.getElementById('redesign-url').value = '';
-
-                await this.makeRequest('/api/ai/redesign', { 
-                    url, 
-                    model: this.selectedModel,
-                    improvements: this.selectedFeatures 
-                }, outputElement);
-            }
-
-            async makeRequest(endpoint, data, outputElement) {
-                this.showLoading(outputElement);
-
+            async sendChat(message) {
+                this.showLoading(true);
+                
                 try {
-                    const response = await fetch(this.baseURL + endpoint, {
+                    const response = await fetch(this.baseURL + '/api/ai/chat', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data)
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            message, 
+                            model: this.chatModel 
+                        })
                     });
 
                     const result = await response.json();
+                    this.showLoading(false);
 
                     if (result.success) {
-                        this.showResponse(outputElement, result);
+                        this.addMessage('ai', result.response, 'chat', result);
                     } else {
-                        this.showError(outputElement, result.error);
+                        this.showError(result.error);
                     }
                 } catch (error) {
-                    this.showError(outputElement, 'Koneksi gagal: ' + error.message);
+                    this.showLoading(false);
+                    this.showError('Koneksi gagal: ' + error.message);
                 }
             }
 
-            addMessage(container, type, content) {
-                // Hapus empty state jika ada
-                const emptyState = container.querySelector('.empty-state');
-                if (emptyState) emptyState.remove();
+            async sendBuildUI(description) {
+                this.showLoading(true);
+                
+                try {
+                    const response = await fetch(this.baseURL + '/api/ai/build-ui', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            description, 
+                            model: this.coderModel 
+                        })
+                    });
 
+                    const result = await response.json();
+                    this.showLoading(false);
+
+                    if (result.success) {
+                        this.addMessage('ai', result, 'code', result);
+                    // Show preview button for code generation
+                        this.showPreviewButton(result);
+                    } else {
+                        this.showError(result.error);
+                    }
+                } catch (error) {
+                    this.showLoading(false);
+                    this.showError('Koneksi gagal: ' + error.message);
+                }
+            }
+
+            async sendRedesign(url, style) {
+                this.showLoading(true);
+                
+                try {
+                    const response = await fetch(this.baseURL + '/api/ai/redesign', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            url, 
+                            model: this.redesignModel,
+                            improvements: [style] 
+                        })
+                    });
+
+                    const result = await response.json();
+                    this.showLoading(false);
+
+                    if (result.success) {
+                        this.addMessage('ai', result, 'redesign', result);
+                        // Show preview button for redesign
+                        this.showPreviewButton(result);
+                    } else {
+                        this.showError(result.error);
+                    }
+                } catch (error) {
+                    this.showLoading(false);
+                    this.showError('Koneksi gagal: ' + error.message);
+                }
+            }
+
+            addMessage(type, content, mode, result = null) {
+                const messageList = document.getElementById('message-list');
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `message ${type}-message`;
-                messageDiv.innerHTML = `
-                    <div style="margin-bottom: 1rem; padding: 0.75rem; border-radius: 8px; background: ${type === 'user' ? 'var(--primary-color)' : 'var(--light-color)'}; color: ${type === 'user' ? 'white' : 'var(--dark-color)'}">
-                        <strong>${type === 'user' ? 'Anda' : 'AI'}:</strong>
-                        <div style="margin-top: 0.5rem; white-space: pre-wrap;">${this.escapeHtml(content)}</div>
-                    </div>
-                `;
-                container.appendChild(messageDiv);
-                container.scrollTop = container.scrollHeight;
-            }
 
-            showLoading(container) {
-                const loadingDiv = document.createElement('div');
-                loadingDiv.className = 'loading-spinner';
-                loadingDiv.innerHTML = `
-                    <ion-spinner name="crescent"></ion-spinner>
-                    <span style="margin-left: 0.5rem;">AI sedang berpikir...</span>
-                `;
-                container.appendChild(loadingDiv);
-                container.scrollTop = container.scrollHeight;
-            }
+                let messageContent = '';
+                let modelBadge = '';
 
-            showResponse(container, result) {
-                // Hapus loading spinner
-                const loading = container.querySelector('.loading-spinner');
-                if (loading) loading.remove();
-
-                const responseDiv = document.createElement('div');
-                responseDiv.className = 'message ai-message';
-
-                let content = '';
-                
-                if (this.currentTab === 'chat') {
-                    content = this.formatChatResponse(result.response);
-                } else if (this.currentTab === 'build-ui') {
-                    content = this.formatBuildUIResponse(result);
-                } else if (this.currentTab === 'redesign') {
-                    content = this.formatRedesignResponse(result);
+                if (result && result.model) {
+                    modelBadge = `<span class="model-badge">${result.model}</span>`;
                 }
 
-                responseDiv.innerHTML = content;
-                container.appendChild(responseDiv);
-                container.scrollTop = container.scrollHeight;
-            }
-
-            formatChatResponse(response) {
-                return `
-                    <div style="padding: 0.75rem; border-radius: 8px; background: var(--light-color);">
-                        <strong>AI:</strong>
-                        <div class="response-content" style="margin-top: 0.5rem; white-space: pre-wrap;">${this.escapeHtml(response)}</div>
-                        ${this.getTokenInfo(response)}
-                    </div>
-                `;
-            }
-
-            formatBuildUIResponse(result) {
-                let content = `
-                    <div style="padding: 0.75rem; border-radius: 8px; background: var(--light-color);">
-                        <strong>AI Response:</strong>
-                        <div style="margin-top: 0.5rem;">
-                `;
-
-                if (result.html) {
-                    content += `
-                        <h4>📄 HTML:</h4>
-                        <div class="code-block">${this.escapeHtml(result.html)}</div>
-                        <button onclick="this.copyCode('${this.escapeHtml(result.html)}')" style="margin: 0.5rem 0;">
-                            <ion-icon name="copy-outline"></ion-icon> Copy HTML
-                        </button>
-                    `;
-                }
-
-                if (result.css) {
-                    content += `
-                        <h4>🎨 CSS:</h4>
-                        <div class="code-block">${this.escapeHtml(result.css)}</div>
-                        <button onclick="this.copyCode('${this.escapeHtml(result.css)}')" style="margin: 0.5rem 0;">
-                            <ion-icon name="copy-outline"></ion-icon> Copy CSS
-                        </button>
-                    `;
-                }
-
-                if (result.javascript) {
-                    content += `
-                        <h4>⚡ JavaScript:</h4>
-                        <div class="code-block">${this.escapeHtml(result.javascript)}</div>
-                        <button onclick="this.copyCode('${this.escapeHtml(result.javascript)}')" style="margin: 0.5rem 0;">
-                            <ion-icon name="copy-outline"></ion-icon> Copy JavaScript
-                        </button>
-                    `;
-                }
-
-                if (result.explanation) {
-                    content += `
-                        <h4>💡 Penjelasan:</h4>
-                        <div style="white-space: pre-wrap;">${this.escapeHtml(result.explanation)}</div>
-                    `;
-                }
-
-                content += this.getTokenInfo(result);
-                content += '</div></div>';
-
-                return content;
-            }
-
-            formatRedesignResponse(result) {
-                let content = `
-                    <div style="padding: 0.75rem; border-radius: 8px; background: var(--light-color);">
-                        <strong>Redesign Analysis:</strong>
-                        <div style="margin-top: 0.5rem;">
-                `;
-
-                if (result.analysis) {
-                    content += `
-                        <h4>🔍 Analisis:</h4>
-                        <div style="white-space: pre-wrap; margin-bottom: 1rem;">${this.escapeHtml(result.analysis)}</div>
-                    `;
-                }
-
-                if (result.improvements) {
-                    content += `
-                        <h4>✨ Improvements:</h4>
-                        <div style="margin-bottom: 1rem;">
-                            ${Array.isArray(result.improvements) ? 
-                                result.improvements.map(imp => `<div class="improvement-item">• ${this.escapeHtml(imp)}</div>`).join('') : 
-                                `<div style="white-space: pre-wrap;">${this.escapeHtml(result.improvements)}</div>`
-                            }
+                if (type === 'user') {
+                    messageContent = `
+                        <div class="message-header">
+                            <span>Anda</span>
                         </div>
+                        <div class="message-content">${this.escapeHtml(content)}</div>
                     `;
+                } else {
+                    if (mode === 'chat') {
+                        messageContent = `
+                            <div class="message-header">
+                                <span>CoCode AI {modelBadge}</span>
+                            </div>
+                            <div class="message-content">${this.formatMarkdown(content)}</div>
+                            ${result ? this.getTokenInfo(result) : ''}
+                        `;
+                    } else if (mode === 'code' || mode === 'redesign') {
+                        messageContent = this.formatCodeResponse(content, result, mode);
+                    }
                 }
 
-                if (result.html) {
-                    content += `
-                        <h4>🎨 Redesign Code:</h4>
-                        <div class="code-block">${this.escapeHtml(result.html)}</div>
-                        <button onclick="this.copyCode('${this.escapeHtml(result.html)}')" style="margin: 0.5rem 0;">
-                            <ion-icon name="copy-outline"></ion-icon> Copy Code
-                        </button>
-                    `;
-                }
+                messageDiv.innerHTML = messageContent;
+                messageList.appendChild(messageDiv);
+                messageList.scrollTop = messageList.scrollHeight;
 
-                content += this.getTokenInfo(result);
-                content += '</div></div>';
-
-                return content;
+                // Add to conversation history
+                this.conversationHistory.push({ type, content, mode, timestamp: new Date() });
             }
 
-            showError(container, error) {
-                const loading = container.querySelector('.loading-spinner');
-                if (loading) loading.remove();
-
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'message error-message';
-                errorDiv.innerHTML = `
-                    <div style="padding: 0.75rem; border-radius: 8px; background: var(--danger-color); color: white;">
-                        <strong>Error:</strong>
-                        <div style="margin-top: 0.5rem;">${this.escapeHtml(error)}</div>
+            formatCodeResponse(content, result, mode) {
+                let html = `
+                    <div class="message-header">
+                        <span>CoCode AI {modelBadge}</span>
                     </div>
                 `;
-                container.appendChild(errorDiv);
-                container.scrollTop = container.scrollHeight;
-            }
 
-            getTokenInfo(result) {
-                if (result.tokens_used) {
-                    return `<div class="token-info">Tokens used: ${result.tokens_used} | Model: ${result.model}</div>`;
+                if (mode === 'code') {
+                    if (content.explanation) {
+                        html += `<div class="message-content">${this.formatMarkdown(content.explanation)}</div>`;
+                    }
+                    
+                    if (content.html) {
+                        html += `
+                            <h4>📄 HTML Code:</h4>
+                            <div class="code-block">
+                                <ion-button class="copy-button" size="small" onclick="app.copyCode(this.nextElementSibling.textContent)">
+                                    <ion-icon name="copy-outline"></ion-icon>
+                                </ion-button>
+                                <pre><code class="html">${this.escapeHtml(content.html)}</code></pre>
+                            </div>
+                        `;
+                    }
+                } else if (mode === 'redesign') {
+                    if (content.analysis) {
+                        html += `
+                            <h4>🔍 Analisis:</h4>
+                            <div class="message-content">${this.formatMarkdown(content.analysis)}</div>
+                        `;
+                    }
+
+                    if (content.improvements) {
+                        html += `
+                            <h4>✨ Improvements:</h4>
+                            <div class="message-content">${Array.isArray(content.improvements) ? 
+                                content.improvements.map(imp => `• ${this.escapeHtml(imp)}`).join('<br>') : 
+                                this.formatMarkdown(content.improvements)
+                            }</div>
+                        `;
+                    }
+
+                    if (content.html) {
+                        html += `
+                            <h4>🎨 Redesign Code:</h4>
+                            <div class="code-block">
+                                <ion-button class="copy-button" size="small" onclick="app.copyCode(this.nextElementSibling.textContent)">
+                                    <ion-icon name="copy-outline"></ion-icon>
+                                </ion-button>
+                                <pre><code class="html">${this.escapeHtml(content.html)}</code></pre>
+                            </div>
+                        `;
+                    }
                 }
-                return '';
+
+                html += result ? this.getTokenInfo(result) : '';
+                return html;
             }
 
-            escapeHtml(unsafe) {
-                if (!unsafe) return '';
-                return unsafe
-                    .toString()
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;")
-                    .replace(/'/g, "&#039;");
+            showPreviewButton(result) {
+                const messageList = document.getElementById('message-list');
+                const lastMessage = messageList.lastElementChild;
+                
+                const previewButton = document.createElement('ion-button');
+                previewButton.className = 'preview-button';
+                previewButton.color = 'secondary';
+                previewButton.size = 'small';
+                previewButton.innerHTML = `
+                    <ion-icon name="eye-outline" slot="start"></ion-icon>
+                    Preview Desain
+                `;
+                
+                previewButton.addEventListener('click', () => {
+                    this.openPreview(result);
+                });
+
+                lastMessage.appendChild(previewButton);
+            }
+
+            openPreview(result) {
+                const modal = document.getElementById('preview-modal');
+                const previewFrame = document.getElementById('preview-frame');
+                const reasoningOutput = document.getElementById('reasoning-output');
+                const sourceCodeOutput = document.getElementById('source-code-output');
+
+                // Set reasoning
+                if (result.explanation) {
+                    reasoningOutput.innerHTML = this.formatMarkdown(result.explanation);
+                } else if (result.analysis) {
+                    reasoningOutput.innerHTML = this.formatMarkdown(result.analysis);
+                }
+
+                // Set source code
+                const fullCode = result.html || '';
+                sourceCodeOutput.textContent = fullCode;
+                hljs.highlightElement(sourceCodeOutput);
+
+                // Set preview
+                const previewHtml = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style>${result.css || ''}</style>
+                    </head>
+                    <body>${result.html || ''}</body>
+                    </html>
+                `;
+
+                previewFrame.srcdoc = previewHtml;
+                modal.present();
+
+                // Store current code for copying
+                this.currentPreviewCode = fullCode;
+            }
+
+            closePreview() {
+                const modal = document.getElementById('preview-modal');
+                modal.dismiss();
+            }
+
+            copySourceCode() {
+                if (this.currentPreviewCode) {
+                    navigator.clipboard.writeText(this.currentPreviewCode).then(() => {
+                        const button = document.getElementById('copy-code-button');
+                        const originalText = button.innerHTML;
+                        button.innerHTML = '<ion-icon name="checkmark-outline" slot="start"></ion-icon>Berhasil Disalin!';
+                        button.disabled = true;
+                        
+                        setTimeout(() => {
+                            button.innerHTML = originalText;
+                            button.disabled = false;
+                        }, 2000);
+                    });
+                }
             }
 
             copyCode(code) {
                 navigator.clipboard.writeText(code).then(() => {
+                    // Show temporary feedback
                     const toast = document.createElement('ion-toast');
                     toast.message = 'Kode berhasil disalin!';
                     toast.duration = 2000;
@@ -771,12 +813,73 @@
                     toast.present();
                 });
             }
+
+            openSettings() {
+                const modal = document.getElementById('settings-modal');
+                modal.present();
+            }
+
+            closeSettings() {
+                const modal = document.getElementById('settings-modal');
+                modal.dismiss();
+            }
+
+            clearHistory() {
+                const messageList = document.getElementById('message-list');
+                messageList.innerHTML = '';
+                this.conversationHistory = [];
+                
+                // Show initial message again
+                this.addMessage('ai', 'Riwayat percakapan telah dihapus. Ada yang bisa saya bantu?', 'chat');
+            }
+
+            showLoading(show) {
+                const indicator = document.getElementById('loading-indicator');
+                if (show) {
+                    indicator.classList.remove('hidden');
+                } else {
+                    indicator.classList.add('hidden');
+                }
+            }
+
+            showError(message) {
+                const messageList = document.getElementById('message-list');
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'message error-message';
+                errorDiv.innerHTML = `
+                    <div style="color: var(--danger-color); font-weight: 600;">
+                        <ion-icon name="warning-outline"></ion-icon> Error
+                    </div>
+                    <div class="message-content">${this.escapeHtml(message)}</div>
+                `;
+                messageList.appendChild(errorDiv);
+                messageList.scrollTop = messageList.scrollHeight;
+            }
+
+            getTokenInfo(result) {
+                if (result.tokens_used) {
+                    return `<div class="token-info">Tokens used: ${result.tokens_used}</div>`;
+                }
+                return '';
+            }
+
+            escapeHtml(unsafe) {
+                if (!unsafe) return '';
+                return unsafe.toString()
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            formatMarkdown(text) {
+                return marked.parse(text);
+            }
         }
 
-        // Inisialisasi aplikasi saat DOM siap
-        document.addEventListener('DOMContentLoaded', () => {
-            new CoCodeAI();
-        });
+        // Initialize the app
+        const app = new CoCodeAI();
     </script>
 </body>
 </html>
