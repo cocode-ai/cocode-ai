@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoCode-AI - AI UI/UX Builder</title>
+    
+    <!-- Ionic Core CDN -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+    
+    <style>
+        :root {
+            --primary-color: #3880ff;
+            --secondary-color: #3dc2ff;
+            --success-color: #2dd36f;
+            --warning-color: #ffc409;
+            --danger-color: #eb445a;
+            --dark-color: #222428;
+            --light-color: #f4f5f8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--light-color);
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .header p {
+            margin: 0.25rem 0 0 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        .tab-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .output-container {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            min-height: 300px;
+            max-height: 60vh;
+        }
+
+        .input-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            bottom: 0;
+            margin-top: auto;
+        }
+
+        .model-selector {
+            margin-bottom: 1rem;
+        }
+
+        .model-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .model-option {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .input-field {
+            flex: 1;
+        }
+
+        .send-button {
+            min-width: 60px;
+            height: 56px;
+        }
+
+        .feature-tags {
+            margin: 0.5rem 0;
+        }
+
+        .feature-tag {
+            margin: 0.25rem;
+            --background: var(--light-color);
+            --color: var(--dark-color);
+        }
+
+        .feature-tag.selected {
+            --background: var(--primary-color);
+            --color: white;
+        }
+
+        .response-content {
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: var(--dark-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #666;
+            padding: 3rem 1rem;
+        }
+
+        .empty-state ion-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .improvement-item {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: var(--light-color);
+            border-radius: 8px;
+        }
+
+        .token-info {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 0.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.25rem;
+            }
+
+            .input-area {
+                flex-direction: column;
+            }
+
+            .send-button {
+                width: 100%;
+                height: 48px;
+            }
+
+            .model-options {
+                flex-direction: column;
+            }
+
+            .model-option {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 0.75rem;
+            }
+
+            .header h1 {
+                font-size: 1.1rem;
+            }
+
+            .output-container {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .input-section {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Custom scrollbar */
+        .output-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .output-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .output-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .output-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚀 CoCode-AI</h1>
+            <p>AI untuk Membuat UI/UX HTML + Vanilla</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Tabs -->
+            <ion-tabs class="tab-content">
+                <ion-tab-bar slot="bottom">
+                    <ion-tab-button tab="chat" selected>
+                        <ion-icon name="chatbubble-outline"></ion-icon>
+                        <ion-label>General Chat</ion-label>
+                    </ion-tab-button>
+                    
+                    <ion-tab-button tab="build-ui">
+                        <ion-icon name="construct-outline"></ion-icon>
+                        <ion-label>Build UI</ion-label>
+                    </ion-tab-button>
+                    
+                    <ion-tab-button tab="redesign">
+                        <ion-icon name="color-palette-outline"></ion-icon>
+                        <ion-label>Redesign</ion-label>
+                    </ion-tab-button>
+                </ion-tab-bar>
+            </ion-tabs>
+
+            <!-- Tab Contents -->
+            <div class="tab-content">
+                <!-- Chat Tab -->
+                <div id="chat-tab" class="tab-pane active">
+                    <div class="output-container" id="chat-output">
+                        <div class="empty-state">
+                            <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+                            <p>Mulai percakapan tentang programming dan UI/UX</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Build UI Tab -->
+                <div id="build-ui-tab" class="tab-pane" style="display: none;">
+                    <div class="output-container" id="build-ui-output">
+                        <div class="empty-state">
+                            <ion-icon name="code-slash-outline"></ion-icon>
+                            <p>Deskripsikan UI yang ingin Anda buat</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Redesign Tab -->
+                <div id="redesign-tab" class="tab-pane" style="display: none;">
+                    <div class="output-container" id="redesign-output">
+                        <div class="empty-state">
+                            <ion-icon name="brush-outline"></ion-icon>
+                            <p>Masukkan URL website yang ingin di-redesign</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Section - Tetap di bawah -->
+            <div class="input-section">
+                <!-- Model Selector -->
+                <div class="model-selector">
+                    <ion-label>Pilih Model AI:</ion-label>
+                    <div class="model-options">
+                        <ion-segment class="model-option" value="openai/gpt-oss-120b" id="model-selector">
+                            <ion-segment-button value="openai/gpt-oss-120b">
+                                <ion-label>GPT-OSS</ion-label>
+                            </ion-segment-button>
+                            <ion-segment-button value="moonshotai/kimi-k2-instruct-0905">
+                                <ion-label>Kimi-K2</ion-label>
+                            </ion-segment-button>
+                        </ion-segment>
+                    </div>
+                </div>
+
+                <!-- Dynamic Input Fields -->
+                <div id="chat-input" class="input-area">
+                    <ion-textarea 
+                        class="input-field"
+                        id="chat-message"
+                        placeholder="Tanyakan tentang programming, HTML, CSS, JavaScript..."
+                        rows="3"
+                        auto-grow="true"
+                    ></ion-textarea>
+                    <ion-button class="send-button" id="chat-send" expand="block">
+                        <ion-icon name="send-outline"></ion-icon>
+                    </ion-button>
+                </div>
+
+                <div id="build-ui-input" class="input-area" style="display: none;">
+                    <ion-textarea 
+                        class="input-field"
+                        id="build-ui-description"
+                        placeholder="Deskripsikan UI yang ingin dibuat, contoh: 'Dashboard admin dengan sidebar, header, dan cards statistics'"
+                        rows="3"
+                        auto-grow="true"
+                    ></ion-textarea>
+                    <ion-button class="send-button" id="build-ui-send" expand="block">
+                        <ion-icon name="construct-outline"></ion-icon>
+                    </ion-button>
+                </div>
+
+                <div id="redesign-input" class="input-area" style="display: none;">
+                    <ion-input
+                        class="input-field"
+                        id="redesign-url"
+                        placeholder="https://example.com"
+                        type="url"
+                    ></ion-input>
+                    <ion-button class="send-button" id="redesign-send" expand="block">
+                        <ion-icon name="color-palette-outline"></ion-icon>
+                    </ion-button>
+                </div>
+
+                <!-- Feature Tags untuk Build UI -->
+                <div id="build-ui-features" class="feature-tags" style="display: none;">
+                    <ion-chip class="feature-tag" data-feature="responsive">
+                        <ion-label>Responsive</ion-label>
+                    </ion-chip>
+                    <ion-chip class="feature-tag" data-feature="dark-mode">
+                        <ion-label>Dark Mode</ion-label>
+                    </ion-chip>
+                    <ion-chip class="feature-tag" data-feature="animations">
+                        <ion-label>Animations</ion-label>
+                    </ion-chip>
+                    <ion-chip class="feature-tag" data-feature="mobile-first">
+                        <ion-label>Mobile First</ion-label>
+                    </ion-chip>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class CoCodeAI {
+            constructor() {
+                this.currentTab = 'chat';
+                this.selectedModel = 'openai/gpt-oss-120b';
+                this.selectedFeatures = [];
+                this.baseURL = 'https://cocode-ai.mvstream.workers.dev'; // Ganti dengan URL worker Anda
+                
+                this.initializeEventListeners();
+                this.showTab('chat');
+            }
+
+            initializeEventListeners() {
+                // Tab switching
+                document.querySelectorAll('ion-tab-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const tab = e.currentTarget.getAttribute('tab');
+                        this.showTab(tab);
+                    });
+                });
+
+                // Model selection
+                document.getElementById('model-selector').addEventListener('ionChange', (e) => {
+                    this.selectedModel = e.detail.value;
+                });
+
+                // Send buttons
+                document.getElementById('chat-send').addEventListener('click', () => this.sendChat());
+                document.getElementById('build-ui-send').addEventListener('click', () => this.sendBuildUI());
+                document.getElementById('redesign-send').addEventListener('click', () => this.sendRedesign());
+
+                // Enter key untuk textarea
+                document.getElementById('chat-message').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendChat();
+                    }
+                });
+
+                document.getElementById('build-ui-description').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendBuildUI();
+                    }
+                });
+
+                document.getElementById('redesign-url').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.sendRedesign();
+                    }
+                });
+
+                // Feature tags
+                document.querySelectorAll('.feature-tag').forEach(chip => {
+                    chip.addEventListener('click', (e) => {
+                        const feature = e.currentTarget.getAttribute('data-feature');
+                        this.toggleFeature(feature, e.currentTarget);
+                    });
+                });
+            }
+
+            showTab(tabName) {
+                this.currentTab = tabName;
+                
+                // Hide all tab contents
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.style.display = 'none';
+                });
+                
+                // Hide all input areas
+                document.querySelectorAll('.input-area').forEach(input => {
+                    input.style.display = 'none';
+                });
+
+                // Show selected tab content
+                document.getElementById(`${tabName}-tab`).style.display = 'block';
+                document.getElementById(`${tabName}-input`).style.display = 'flex';
+
+                // Show/hide feature tags
+                const featuresElement = document.getElementById('build-ui-features');
+                if (tabName === 'build-ui') {
+                    featuresElement.style.display = 'block';
+                } else {
+                    featuresElement.style.display = 'none';
+                }
+
+                // Update active tab button
+                document.querySelectorAll('ion-tab-button').forEach(button => {
+                    button.removeAttribute('selected');
+                });
+                document.querySelector(`ion-tab-button[tab="${tabName}"]`).setAttribute('selected', 'true');
+            }
+
+            toggleFeature(feature, element) {
+                if (this.selectedFeatures.includes(feature)) {
+                    this.selectedFeatures = this.selectedFeatures.filter(f => f !== feature);
+                    element.classList.remove('selected');
+                } else {
+                    this.selectedFeatures.push(feature);
+                    element.classList.add('selected');
+                }
+            }
+
+            async sendChat() {
+                const message = document.getElementById('chat-message').value.trim();
+                if (!message) return;
+
+                const outputElement = document.getElementById('chat-output');
+                this.addMessage(outputElement, 'user', message);
+                document.getElementById('chat-message').value = '';
+
+                await this.makeRequest('/api/ai/chat', { message, model: this.selectedModel }, outputElement);
+            }
+
+            async sendBuildUI() {
+                const description = document.getElementById('build-ui-description').value.trim();
+                if (!description) return;
+
+                const outputElement = document.getElementById('build-ui-output');
+                this.addMessage(outputElement, 'user', `Buat UI: ${description}`);
+                document.getElementById('build-ui-description').value = '';
+
+                await this.makeRequest('/api/ai/build-ui', { 
+                    description, 
+                    model: this.selectedModel,
+                    features: this.selectedFeatures 
+                }, outputElement);
+            }
+
+            async sendRedesign() {
+                const url = document.getElementById('redesign-url').value.trim();
+                if (!url) return;
+
+                const outputElement = document.getElementById('redesign-output');
+                this.addMessage(outputElement, 'user', `Redesign: ${url}`);
+                document.getElementById('redesign-url').value = '';
+
+                await this.makeRequest('/api/ai/redesign', { 
+                    url, 
+                    model: this.selectedModel,
+                    improvements: this.selectedFeatures 
+                }, outputElement);
+            }
+
+            async makeRequest(endpoint, data, outputElement) {
+                this.showLoading(outputElement);
+
+                try {
+                    const response = await fetch(this.baseURL + endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.showResponse(outputElement, result);
+                    } else {
+                        this.showError(outputElement, result.error);
+                    }
+                } catch (error) {
+                    this.showError(outputElement, 'Koneksi gagal: ' + error.message);
+                }
+            }
+
+            addMessage(container, type, content) {
+                // Hapus empty state jika ada
+                const emptyState = container.querySelector('.empty-state');
+                if (emptyState) emptyState.remove();
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}-message`;
+                messageDiv.innerHTML = `
+                    <div style="margin-bottom: 1rem; padding: 0.75rem; border-radius: 8px; background: ${type === 'user' ? 'var(--primary-color)' : 'var(--light-color)'}; color: ${type === 'user' ? 'white' : 'var(--dark-color)'}">
+                        <strong>${type === 'user' ? 'Anda' : 'AI'}:</strong>
+                        <div style="margin-top: 0.5rem; white-space: pre-wrap;">${this.escapeHtml(content)}</div>
+                    </div>
+                `;
+                container.appendChild(messageDiv);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            showLoading(container) {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'loading-spinner';
+                loadingDiv.innerHTML = `
+                    <ion-spinner name="crescent"></ion-spinner>
+                    <span style="margin-left: 0.5rem;">AI sedang berpikir...</span>
+                `;
+                container.appendChild(loadingDiv);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            showResponse(container, result) {
+                // Hapus loading spinner
+                const loading = container.querySelector('.loading-spinner');
+                if (loading) loading.remove();
+
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'message ai-message';
+
+                let content = '';
+                
+                if (this.currentTab === 'chat') {
+                    content = this.formatChatResponse(result.response);
+                } else if (this.currentTab === 'build-ui') {
+                    content = this.formatBuildUIResponse(result);
+                } else if (this.currentTab === 'redesign') {
+                    content = this.formatRedesignResponse(result);
+                }
+
+                responseDiv.innerHTML = content;
+                container.appendChild(responseDiv);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            formatChatResponse(response) {
+                return `
+                    <div style="padding: 0.75rem; border-radius: 8px; background: var(--light-color);">
+                        <strong>AI:</strong>
+                        <div class="response-content" style="margin-top: 0.5rem; white-space: pre-wrap;">${this.escapeHtml(response)}</div>
+                        ${this.getTokenInfo(response)}
+                    </div>
+                `;
+            }
+
+            formatBuildUIResponse(result) {
+                let content = `
+                    <div style="padding: 0.75rem; border-radius: 8px; background: var(--light-color);">
+                        <strong>AI Response:</strong>
+                        <div style="margin-top: 0.5rem;">
+                `;
+
+                if (result.html) {
+                    content += `
+                        <h4>📄 HTML:</h4>
+                        <div class="code-block">${this.escapeHtml(result.html)}</div>
+                        <button onclick="this.copyCode('${this.escapeHtml(result.html)}')" style="margin: 0.5rem 0;">
+                            <ion-icon name="copy-outline"></ion-icon> Copy HTML
+                        </button>
+                    `;
+                }
+
+                if (result.css) {
+                    content += `
+                        <h4>🎨 CSS:</h4>
+                        <div class="code-block">${this.escapeHtml(result.css)}</div>
+                        <button onclick="this.copyCode('${this.escapeHtml(result.css)}')" style="margin: 0.5rem 0;">
+                            <ion-icon name="copy-outline"></ion-icon> Copy CSS
+                        </button>
+                    `;
+                }
+
+                if (result.javascript) {
+                    content += `
+                        <h4>⚡ JavaScript:</h4>
+                        <div class="code-block">${this.escapeHtml(result.javascript)}</div>
+                        <button onclick="this.copyCode('${this.escapeHtml(result.javascript)}')" style="margin: 0.5rem 0;">
+                            <ion-icon name="copy-outline"></ion-icon> Copy JavaScript
+                        </button>
+                    `;
+                }
+
+                if (result.explanation) {
+                    content += `
+                        <h4>💡 Penjelasan:</h4>
+                        <div style="white-space: pre-wrap;">${this.escapeHtml(result.explanation)}</div>
+                    `;
+                }
+
+                content += this.getTokenInfo(result);
+                content += '</div></div>';
+
+                return content;
+            }
+
+            formatRedesignResponse(result) {
+                let content = `
+                    <div style="padding: 0.75rem; border-radius: 8px; background: var(--light-color);">
+                        <strong>Redesign Analysis:</strong>
+                        <div style="margin-top: 0.5rem;">
+                `;
+
+                if (result.analysis) {
+                    content += `
+                        <h4>🔍 Analisis:</h4>
+                        <div style="white-space: pre-wrap; margin-bottom: 1rem;">${this.escapeHtml(result.analysis)}</div>
+                    `;
+                }
+
+                if (result.improvements) {
+                    content += `
+                        <h4>✨ Improvements:</h4>
+                        <div style="margin-bottom: 1rem;">
+                            ${Array.isArray(result.improvements) ? 
+                                result.improvements.map(imp => `<div class="improvement-item">• ${this.escapeHtml(imp)}</div>`).join('') : 
+                                `<div style="white-space: pre-wrap;">${this.escapeHtml(result.improvements)}</div>`
+                            }
+                        </div>
+                    `;
+                }
+
+                if (result.html) {
+                    content += `
+                        <h4>🎨 Redesign Code:</h4>
+                        <div class="code-block">${this.escapeHtml(result.html)}</div>
+                        <button onclick="this.copyCode('${this.escapeHtml(result.html)}')" style="margin: 0.5rem 0;">
+                            <ion-icon name="copy-outline"></ion-icon> Copy Code
+                        </button>
+                    `;
+                }
+
+                content += this.getTokenInfo(result);
+                content += '</div></div>';
+
+                return content;
+            }
+
+            showError(container, error) {
+                const loading = container.querySelector('.loading-spinner');
+                if (loading) loading.remove();
+
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'message error-message';
+                errorDiv.innerHTML = `
+                    <div style="padding: 0.75rem; border-radius: 8px; background: var(--danger-color); color: white;">
+                        <strong>Error:</strong>
+                        <div style="margin-top: 0.5rem;">${this.escapeHtml(error)}</div>
+                    </div>
+                `;
+                container.appendChild(errorDiv);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            getTokenInfo(result) {
+                if (result.tokens_used) {
+                    return `<div class="token-info">Tokens used: ${result.tokens_used} | Model: ${result.model}</div>`;
+                }
+                return '';
+            }
+
+            escapeHtml(unsafe) {
+                if (!unsafe) return '';
+                return unsafe
+                    .toString()
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            copyCode(code) {
+                navigator.clipboard.writeText(code).then(() => {
+                    const toast = document.createElement('ion-toast');
+                    toast.message = 'Kode berhasil disalin!';
+                    toast.duration = 2000;
+                    toast.color = 'success';
+                    document.body.appendChild(toast);
+                    toast.present();
+                });
+            }
+        }
+
+        // Inisialisasi aplikasi saat DOM siap
+        document.addEventListener('DOMContentLoaded', () => {
+            new CoCodeAI();
+        });
+    </script>
+</body>
+</html>
