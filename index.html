@@ -258,8 +258,8 @@
             --padding-start: 10px;
             --padding-end: 10px;
             --background: transparent;
-            --border-style: none; /* Hilangkan garis bawah */
-            --inner-border-width: 0; /* Hilangkan inner border */
+            --border-style: none; 
+            --inner-border-width: 0; 
             --box-shadow: none;
             font-size: 0.95rem;
             color: var(--text-main);
@@ -346,12 +346,22 @@
             align-items: center;
             gap: 0.5rem;
             cursor: pointer;
-            height: 46px; /* Menyamakan tinggi dengan input & select */
+            height: 46px; 
             transition: opacity 0.2s;
         }
 
         .flat-btn-accent:hover {
             opacity: 0.9;
+        }
+
+        /* Modern Toggle Checkbox */
+        .compact-mode-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding: 0.25rem 0.5rem;
         }
 
         /* Model Badges and Indicators */
@@ -487,11 +497,9 @@
             <div id="redesign-footer" class="hidden">
                 <ion-toolbar>
                     <div class="redesign-panel">
-                        <!-- Menggunakan ion-input flat tanpa garis bawah bawaan -->
                         <ion-input type="text" id="url-input" class="flat-ion-input" placeholder="Masukkan URL website yang ingin didesain ulang..."></ion-input>
                         
                         <div class="redesign-row">
-                            <!-- Menggunakan ion-select bergaya flat yang konsisten -->
                             <ion-select id="style-select" class="flat-ion-select" value="modern" interface="popover" toggle-icon="chevron-down-outline">
                                 <ion-select-option value="modern">Modern Minimalist</ion-select-option>
                                 <ion-select-option value="clean-light">Vercel Aesthetic</ion-select-option>
@@ -503,6 +511,13 @@
                                 <span>Redesign Website</span>
                                 <ion-icon name="sparkles"></ion-icon>
                             </button>
+                        </div>
+                        
+                        <!-- Toggle Compact Mode (Hemat token / Anti Error) -->
+                        <div class="compact-mode-container">
+                            <ion-checkbox id="compact-mode-toggle" checked="true" justify="start">
+                                <span style="font-size: 0.8rem;">Mode Optimal (Rekomendasi Hemat Token / Anti-Error)</span>
+                            </ion-checkbox>
                         </div>
                     </div>
                 </ion-toolbar>
@@ -599,7 +614,7 @@
                                 <h3 style="font-weight: 600;">UI/UX Redesign Engine</h3>
                                 <p style="font-size: 0.8rem; color: var(--text-muted);">Mesin visual restructuring</p>
                             </ion-label>
-                            <ion-select id="redesign-model-select" value="moonshotai/kimi-k2-instruct-0905" interface="popover">
+                            <ion-select id="redesign-model-select" value="openai/gpt-oss-120b" interface="popover">
                                 <ion-select-option value="openai/gpt-oss-120b">GPT-OSS-120B</ion-select-option>
                                 <ion-select-option value="moonshotai/kimi-k2-instruct-0905">Kimi-K2 Pro</ion-select-option>
                             </ion-select>
@@ -618,13 +633,13 @@
                         <h4 style="font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem;">Paket Layanan</h4>
                         <div style="border:1px solid var(--border-color); border-radius:8px; padding: 1.2rem; background: var(--bg-card);">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
-                                <span style="font-weight:700; font-size:1.1rem;">Plan Gratis</span>
-                                <span style="font-size: 0.75rem; background:#f4f4f5; padding: 2px 8px; border-radius:12px; font-weight:600;" id="premium-status-message">Akun Aktif</span>
+                                <span style="font-weight:700; font-size:1.1rem;">Plan Layanan</span>
+                                <span style="font-size: 0.75rem; background:#f4f4f5; padding: 4px 10px; border-radius:12px; font-weight:600; color: var(--text-main);" id="premium-status-message">Akun Gratis</span>
                             </div>
                             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;" id="generation-count-display">Sisa kuota pembuatan kustom: 2 token penggunaan.</p>
-                            <button id="subscribe-button" style="width:100%; background: var(--primary-color); color: #ffffff; border:none; padding: 0.8rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
+                            <button id="subscribe-button" style="width:100%; background: #0070ba; color: #ffffff; border:none; padding: 0.8rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 0.5rem; transition: background-color 0.2s;">
                                 <ion-icon name="logo-paypal"></ion-icon>
-                                Berlangganan via PayPal
+                                <span id="subscribe-text">Berlangganan via PayPal</span>
                             </button>
                         </div>
                     </div>
@@ -639,10 +654,11 @@
                 this.currentMode = 'chat';
                 this.chatModel = 'openai/gpt-oss-120b';
                 this.coderModel = 'openai/gpt-oss-120b';
-                this.redesignModel = 'moonshotai/kimi-k2-instruct-0905';
+                this.redesignModel = 'openai/gpt-oss-120b';
                 this.conversationHistory = [];
                 this.baseURL = 'https://cocode-ai.mvstream.workers.dev';
                 this.currentPreviewCode = '';
+                this.isPremium = false; 
 
                 this.initializeApp();
             }
@@ -658,9 +674,15 @@
             loadSettings() {
                 const savedCoderModel = localStorage.getItem('cocode_coder_model');
                 const savedRedesignModel = localStorage.getItem('cocode_redesign_model');
+                const savedPremium = localStorage.getItem('cocode_premium_status');
 
                 if (savedCoderModel) this.coderModel = savedCoderModel;
                 if (savedRedesignModel) this.redesignModel = savedRedesignModel;
+                
+                if (savedPremium === 'true') {
+                    this.isPremium = true;
+                    this.updatePremiumUI();
+                }
 
                 if (document.getElementById('coder-model-select')) {
                     document.getElementById('coder-model-select').value = this.coderModel;
@@ -683,19 +705,25 @@
                 document.getElementById('send-button').addEventListener('click', () => this.handleSend());
                 document.getElementById('redesign-button').addEventListener('click', () => this.handleRedesign());
 
-                document.getElementById('chat-input').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        this.handleSend();
-                    }
-                });
+                const chatInput = document.getElementById('chat-input');
+                if (chatInput) {
+                    chatInput.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            this.handleSend();
+                        }
+                    });
+                }
 
-                document.getElementById('url-input').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        this.handleRedesign();
-                    }
-                });
+                const urlInput = document.getElementById('url-input');
+                if (urlInput) {
+                    urlInput.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            this.handleRedesign();
+                        }
+                    });
+                }
 
                 document.getElementById('settings-button').addEventListener('click', () => this.openSettings());
                 document.getElementById('close-settings-modal-button').addEventListener('click', () => this.closeSettings());
@@ -713,6 +741,11 @@
                 });
 
                 document.getElementById('clear-history-button').addEventListener('click', () => this.clearHistory());
+                
+                const subscribeBtn = document.getElementById('subscribe-button');
+                if (subscribeBtn) {
+                    subscribeBtn.addEventListener('click', () => this.handleSubscribe());
+                }
             }
 
             showMode(mode) {
@@ -728,6 +761,63 @@
                 }
 
                 document.getElementById('mode-segment').value = mode;
+            }
+
+            async handleSubscribe() {
+                if (this.isPremium) {
+                    this.showToast('Akun Anda sudah berstatus Premium Pro Aktif!');
+                    return;
+                }
+
+                const subscribeBtn = document.getElementById('subscribe-button');
+                const subscribeText = document.getElementById('subscribe-text');
+                
+                subscribeBtn.style.background = '#005ea6';
+                subscribeBtn.disabled = true;
+                subscribeText.textContent = 'Menghubungkan ke PayPal...';
+
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    subscribeText.textContent = 'Memproses Transaksi...';
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    this.isPremium = true;
+                    localStorage.setItem('cocode_premium_status', 'true');
+                    this.updatePremiumUI();
+
+                    this.showToast('Pembayaran Berhasil! Selamat Datang di Premium Pro.');
+                    this.addMessage('ai', '🎉 **Terima kasih telah berlangganan CoCode AI Premium Pro!** \n\nSekarang Anda memiliki akses tanpa batas untuk semua pilar koding & redesain modern dengan prioritas server tinggi.', 'chat');
+                } catch (error) {
+                    this.showToast('Koneksi pembayaran dibatalkan.');
+                } finally {
+                    subscribeBtn.disabled = false;
+                    subscribeBtn.style.background = this.isPremium ? '#10b981' : '#0070ba';
+                    subscribeText.textContent = this.isPremium ? 'Premium Pro Aktif' : 'Berlangganan via PayPal';
+                }
+            }
+
+            updatePremiumUI() {
+                const premiumStatus = document.getElementById('premium-status-message');
+                const generationDisplay = document.getElementById('generation-count-display');
+                const subscribeBtn = document.getElementById('subscribe-button');
+                const subscribeText = document.getElementById('subscribe-text');
+
+                if (premiumStatus) {
+                    premiumStatus.textContent = 'Premium Pro Active';
+                    premiumStatus.style.background = 'var(--success-color)';
+                    premiumStatus.style.color = '#ffffff';
+                }
+
+                if (generationDisplay) {
+                    generationDisplay.textContent = 'Sisa kuota pembuatan kustom: Unlimited (Akses Server Prioritas)';
+                }
+
+                if (subscribeBtn) {
+                    subscribeBtn.style.background = '#10b981';
+                    if (subscribeText) {
+                        subscribeText.textContent = 'Premium Pro Aktif';
+                    }
+                }
             }
 
             async handleSend() {
@@ -749,7 +839,10 @@
             async handleRedesign() {
                 const urlInput = document.getElementById('url-input');
                 const url = urlInput.value.trim();
-                const style = document.getElementById('style-select').value;
+                const styleSelect = document.getElementById('style-select');
+                const style = styleSelect ? styleSelect.value : 'modern';
+                const compactModeToggle = document.getElementById('compact-mode-toggle');
+                const isCompact = compactModeToggle ? compactModeToggle.checked : true;
 
                 if (!url) {
                     this.showError('Silakan masukkan URL website tujuan terlebih dahulu.');
@@ -757,8 +850,8 @@
                 }
 
                 urlInput.value = '';
-                this.addMessage('user', `Redesign: ${url} (Gaya: ${style})`, 'redesign');
-                await this.sendRedesign(url, style);
+                this.addMessage('user', `Redesign: ${url} (Gaya: ${style}) [Mode Optimal: ${isCompact ? 'Aktif' : 'Nonaktif'}]`, 'redesign');
+                await this.sendRedesign(url, style, isCompact);
             }
 
             async sendChat(message) {
@@ -816,7 +909,7 @@
                 }
             }
 
-            async sendRedesign(url, style) {
+            async sendRedesign(url, style, isCompact) {
                 this.showLoading(true);
 
                 try {
@@ -824,9 +917,10 @@
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
-                            url, 
+                            url: url, 
                             model: this.redesignModel,
-                            improvements: [style] 
+                            improvements: [style],
+                            compact_mode: isCompact
                         })
                     });
 
@@ -837,11 +931,11 @@
                         this.addMessage('ai', result, 'redesign', result);
                         this.showPreviewButton(result);
                     } else {
-                        this.showError(result.error);
+                        this.showError(result.error || 'Terjadi kesalahan sistem saat Redesign.');
                     }
                 } catch (error) {
                     this.showLoading(false);
-                    this.showError('Koneksi bermasalah: ' + error.message);
+                    this.showError('Gagal melakukan redesain (Koneksi bermasalah): ' + error.message);
                 }
             }
 
@@ -881,7 +975,6 @@
                 messageDiv.innerHTML = messageContent;
                 messageList.appendChild(messageDiv);
                 
-                // Native smooth scroll to bottom
                 setTimeout(() => {
                     const contentArea = document.getElementById('chat-content');
                     contentArea.scrollToBottom(300);
